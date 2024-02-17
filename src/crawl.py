@@ -32,6 +32,7 @@ class InsolScraper:
             print(f"fetching for {next_date}")
             results = self.driver.fetch_for_date(next_date)
             self.repo.insert_data(results, next_date)
+        self.finished = True
 
     def wanted_dates(self):
         end_date = datetime.date.today() - datetime.timedelta(days=self.WAIT_DAYS_BEFORE_SCRAPE)
