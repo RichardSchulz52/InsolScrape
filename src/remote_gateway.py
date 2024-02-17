@@ -9,7 +9,8 @@ class RemoteGateway:
 
     NUMBER_OF_RETRIES = 3
 
-    def __init__(self, retryable_errors, accepted_errors, error_handlers) -> None:
+    def __init__(self, retryable_errors, accepted_errors, error_handlers, verbose=False) -> None:
+        self.verbose = verbose
         self.retryable_errors = retryable_errors
         self.accepted_errors = accepted_errors
         self.error_handlers = error_handlers
@@ -25,10 +26,12 @@ class RemoteGateway:
                 if type(e) in self.retryable_errors:
                     retries -= 1
                     retry_possible = True
-                    print(f"Retryable error {type(e)} sleeping for {RemoteGateway.RETRY_SLEEP_TIME}")
+                    if self.verbose:
+                        print(f"Retryable error {type(e)} sleeping for {RemoteGateway.RETRY_SLEEP_TIME}")
                     time.sleep(RemoteGateway.RETRY_SLEEP_TIME)
                 elif type(e) in self.accepted_errors:
-                    print(f"accepted error {type(e)}")
+                    if self.verbose:
+                        print(f"accepted error {type(e)}")
                     return
                 elif type(e) in [error_func_tuple[0] for error_func_tuple in self.error_handlers]:
                     handler_func = \
@@ -43,6 +46,7 @@ class RemoteGateway:
             sleep_time = RemoteGateway.CACHE_CRAWL_SLEEP_TIME
         else:
             sleep_time = RemoteGateway.CRAWL_SLEEP_TIME
-        print(f"sleep for {sleep_time} after crawl call")
+        if self.verbose:
+            print(f"sleep for {sleep_time} after crawl call")
         time.sleep(sleep_time)
         return return_value
