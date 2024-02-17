@@ -6,3 +6,6 @@ class Insolvency:
         self.name = name
         self.residence = residence
 
+    def __str__(self):
+        return f'{self.publication_date}, {self.reference_number}, {self.curt}, {self.name}, {self.residence}'
+
