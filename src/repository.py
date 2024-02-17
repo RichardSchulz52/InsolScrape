@@ -23,8 +23,20 @@ class Repository:
         self.cur = self.con.cursor()
         self.create_table()
 
-    def insert_data(self, insolvency):
-        pass  # TODO
+    def insert_data(self, insolvencies: list):
+        for i in insolvencies:
+            self.cur.execute(f"""
+                INSERT INTO insolvency (reference_number, publication_date, curt, name, residence) 
+                VALUES (%s, %s, %s, %s, %s) 
+            """, (i.reference_number, i.publication_date, i.curt, i.name, i.residence))
+        self.con.commit()
+
+    def inserted_dates(self):
+        self.cur.execute("""
+            SELECT publication_date FROM insolvency
+            GROUP BY publication_date
+        """)
+        return set(self.cur.fetchall())
 
     def close(self):
         self.cur.close()
@@ -32,7 +44,6 @@ class Repository:
 
     def create_table(self):
         self.cur.execute("""CREATE TABLE IF NOT EXISTS insolvency (
-            id integer PRIMARY KEY,
             reference_number VARCHAR(250),
             publication_date date,
             curt VARCHAR(250),

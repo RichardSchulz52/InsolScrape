@@ -5,6 +5,7 @@ import repository
 
 
 class InsolScraper:
+    WAIT_DAYS_BEFORE_SCRAPE = 30
 
     def __init__(self, remote_web_driver_url: str) -> None:
         self.repo = repository.Repository()
@@ -22,8 +23,25 @@ class InsolScraper:
             self.repo.close()
 
     def fetch_all(self):
-        self.driver.fetch_for_date(datetime.date(2019, 10, 17))
+        dates = self.repo.inserted_dates()
+        wanted_dates = self.wanted_dates()
+        dates_to_scrape: set = wanted_dates.difference(dates)
+        while len(dates_to_scrape) > 0:
+            print(f"Dates to go: {len(dates_to_scrape)}")
+            next_date = dates_to_scrape.pop()
+            print(f"fetching for {next_date}")
+            results = self.driver.fetch_for_date(next_date)
+            self.repo.insert_data(results)
 
+    def wanted_dates(self):
+        end_date = datetime.date.today() - datetime.timedelta(days=self.WAIT_DAYS_BEFORE_SCRAPE)
+        start_date = datetime.date(2000,1,1)
+        date = end_date
+        wanted_dates = set()
+        while date != start_date:
+            date = date - datetime.timedelta(days=1)
+            wanted_dates.add(date)
+        return wanted_dates
 
 
 
