@@ -15,6 +15,7 @@ class InsolScraper:
     def startup(self):
         self.repo.open()
         self.driver.start()
+        self.finished = False
 
     def close(self):
         if self.driver is not None:
