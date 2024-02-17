@@ -31,11 +31,6 @@ class Repository:
         self.cur.close()
         self.con.close()
 
-    def open_conf(self, conf):
-        with psycopg2.connect(**conf) as conn:
-            print('Connected to the PostgreSQL server.')
-            return conn
-
     def create_table(self):
         self.cur.execute("""CREATE TABLE IF NOT EXISTS insolvency (
             id integer PRIMARY KEY,
