@@ -1,5 +1,4 @@
 import os
-from configparser import ConfigParser
 import psycopg2
 
 
