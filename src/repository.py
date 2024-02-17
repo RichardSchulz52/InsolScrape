@@ -21,20 +21,24 @@ class Repository:
                                     user=self.user,
                                     password=self.password)
         self.cur = self.con.cursor()
-        self.create_table()
+        self.create_tables()
 
-    def insert_data(self, insolvencies: list):
+    def insert_data(self, insolvencies: list, scraped_date):
         for i in insolvencies:
             self.cur.execute(f"""
                 INSERT INTO insolvency (reference_number, publication_date, curt, name, residence) 
                 VALUES (%s, %s, %s, %s, %s) 
             """, (i.reference_number, i.publication_date, i.curt, i.name, i.residence))
+        self.cur.execute("""
+                    INSERT INTO insolvency_scraped_dates (scraped_date)
+                    VALUES (%s) 
+                """, [scraped_date])
         self.con.commit()
 
-    def inserted_dates(self):
+
+    def scraped_dates(self):
         self.cur.execute("""
-            SELECT publication_date FROM insolvency
-            GROUP BY publication_date
+            SELECT scraped_date FROM insolvency_scraped_dates
         """)
         return set(self.cur.fetchall())
 
@@ -42,7 +46,7 @@ class Repository:
         self.cur.close()
         self.con.close()
 
-    def create_table(self):
+    def create_tables(self):
         self.cur.execute("""CREATE TABLE IF NOT EXISTS insolvency (
             reference_number VARCHAR(250),
             publication_date date,
@@ -50,4 +54,7 @@ class Repository:
             name VARCHAR(250),
             residence VARCHAR(50)
             ) """)
+        self.cur.execute("""CREATE TABLE IF NOT EXISTS insolvency_scraped_dates (
+                    scraped_date date
+                    ) """)
         self.con.commit()

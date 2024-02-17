@@ -23,7 +23,7 @@ class InsolScraper:
             self.repo.close()
 
     def fetch_all(self):
-        dates = self.repo.inserted_dates()
+        dates = self.repo.scraped_dates()
         wanted_dates = self.wanted_dates()
         dates_to_scrape: set = wanted_dates.difference(dates)
         while len(dates_to_scrape) > 0:
@@ -31,7 +31,7 @@ class InsolScraper:
             next_date = dates_to_scrape.pop()
             print(f"fetching for {next_date}")
             results = self.driver.fetch_for_date(next_date)
-            self.repo.insert_data(results)
+            self.repo.insert_data(results, next_date)
 
     def wanted_dates(self):
         end_date = datetime.date.today() - datetime.timedelta(days=self.WAIT_DAYS_BEFORE_SCRAPE)
