@@ -49,7 +49,6 @@ class Driver:
 
     def extract_details(self) -> List[Insolvency]:
         if len(self.driver.find_elements(By.ID, "tbl_ergebnis")) == 0:
-            print("No Insolvencies found")
             return []
         result_table: WebElement = self.driver.find_element(By.ID, "tbl_ergebnis")
         results = result_table.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr")

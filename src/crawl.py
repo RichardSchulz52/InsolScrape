@@ -32,6 +32,10 @@ class InsolScraper:
             next_date = dates_to_scrape.pop()
             print(f"fetching for {next_date}")
             results = self.driver.fetch_for_date(next_date)
+            if len(results) == 1000:
+                print("1000 results found")
+            elif len(results) == 0:
+                print("No Insolvencies found")
             self.repo.insert_data(results, next_date)
         self.finished = True
 
