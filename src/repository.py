@@ -1,3 +1,4 @@
+import datetime
 import os
 import psycopg2
 
@@ -24,11 +25,12 @@ class Repository:
         self.create_tables()
 
     def insert_data(self, insolvencies: list, scraped_date):
+        today = datetime.date.today()
         for i in insolvencies:
             self.cur.execute(f"""
-                INSERT INTO insolvency (reference_number, publication_date, curt, name, residence) 
-                VALUES (%s, %s, %s, %s, %s) 
-            """, (i.reference_number, i.publication_date, i.curt, i.name, i.residence))
+                INSERT INTO insolvency (reference_number, publication_date, curt, name, residence, scraping_date) 
+                VALUES (%s, %s, %s, %s, %s, %s) 
+            """, (i.reference_number, i.publication_date, i.curt, i.name, i.residence, today))
         self.cur.execute("""
                     INSERT INTO insolvency_scraped_dates (scraped_date)
                     VALUES (%s) 
@@ -52,7 +54,8 @@ class Repository:
             publication_date date,
             curt VARCHAR(250),
             name VARCHAR(250),
-            residence VARCHAR(50)
+            residence VARCHAR(50),
+            scraping_date date
             ) """)
         self.cur.execute("""CREATE TABLE IF NOT EXISTS insolvency_scraped_dates (
                     scraped_date date
