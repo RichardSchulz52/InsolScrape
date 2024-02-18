@@ -3,6 +3,7 @@ version: '1.2'
 services:
   insol_scrape:
     container_name: insol_scrape
+    build: .
     image: insol_scrape:latest
     environment:
       - PYTHONUNBUFFERED=1
