@@ -5,7 +5,7 @@ import repository
 
 
 class InsolScraper:
-    WAIT_DAYS_BEFORE_SCRAPE = 30
+    WAIT_DAYS_BEFORE_SCRAPE = 10
 
     def __init__(self, remote_web_driver_url: str) -> None:
         self.repo = repository.Repository()
@@ -45,12 +45,3 @@ class InsolScraper:
             wanted_dates.add(date)
         return wanted_dates
 
-
-
-if __name__ == "__main__":
-    c = InsolScraper(remote_web_driver_url="http://192.168.0.2:4445/wd/hub")
-    try:
-        c.startup()
-        c.fetch_all()
-    finally:
-        c.close()
