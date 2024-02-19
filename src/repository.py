@@ -42,7 +42,8 @@ class Repository:
         self.cur.execute("""
             SELECT scraped_date FROM insolvency_scraped_dates
         """)
-        return set(self.cur.fetchall())
+        dates_result = self.cur.fetchall()
+        return set([r[0] for r in dates_result])
 
     def close(self):
         self.cur.close()
